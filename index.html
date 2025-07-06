@@ -1,0 +1,126 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Online Learning Platform</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Welcome to LearnOnline</h1>
+    <nav>
+      <a href="login.html">Login</a> |
+      <a href="register.html">Register</a>
+    </nav>
+  </header>
+  <main>
+    <section>
+      <h2>Popular Courses</h2>
+      <div id="course-list"></div>
+    </section>
+  </main>
+  <script src="js/courses.js"></script>
+  <script>
+    displayCourses();
+  </script>
+</body>
+</html>
+
+<!-- login.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <h2>Login</h2>
+  <form onsubmit="login(event)">
+    <input type="email" id="login-email" placeholder="Email" required />
+    <input type="password" id="login-password" placeholder="Password" required />
+    <button type="submit">Login</button>
+  </form>
+  <script src="js/auth.js"></script>
+</body>
+</html>
+
+<!-- register.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Register</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <h2>Register</h2>
+  <form onsubmit="register(event)">
+    <input type="email" id="register-email" placeholder="Email" required />
+    <input type="password" id="register-password" placeholder="Password" required />
+    <button type="submit">Register</button>
+  </form>
+  <script src="js/auth.js"></script>
+</body>
+</html>
+
+/* css/styles.css */
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background-color: #f4f4f4;
+}
+header, h2 {
+  text-align: center;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  max-width: 300px;
+  margin: auto;
+}
+input, button {
+  margin: 10px 0;
+  padding: 10px;
+}
+
+/* js/auth.js */
+function register(event) {
+  event.preventDefault();
+  const email = document.getElementById("register-email").value;
+  const password = document.getElementById("register-password").value;
+  const users = JSON.parse(localStorage.getItem("users")) || [];
+  users.push({ email, password });
+  localStorage.setItem("users", JSON.stringify(users));
+  alert("Registration successful!");
+  window.location.href = "login.html";
+}
+
+function login(event) {
+  event.preventDefault();
+  const email = document.getElementById("login-email").value;
+  const password = document.getElementById("login-password").value;
+  const users = JSON.parse(localStorage.getItem("users")) || [];
+  const user = users.find(u => u.email === email && u.password === password);
+  if (user) {
+    localStorage.setItem("loggedInUser", email);
+    alert("Login successful!");
+    window.location.href = "dashboard.html";
+  } else {
+    alert("Invalid credentials");
+  }
+}
+
+/* js/courses.js */
+function displayCourses() {
+  const courses = JSON.parse(localStorage.getItem("courses")) || [
+    { title: "HTML Basics", description: "Learn the basics of HTML." },
+    { title: "CSS Fundamentals", description: "Learn how to style websites with CSS." }
+  ];
+  const container = document.getElementById("course-list");
+  courses.forEach(course => {
+    const div = document.createElement("div");
+    div.innerHTML = `<h3>${course.title}</h3><p>${course.description}</p>`;
+    container.appendChild(div);
+  });
+}
